@@ -3143,13 +3143,13 @@ if (shiShangN >= 2) {
     var cityIdx = +fCity.value || 0;
     if (cityIdx === CUSTOM_IDX) params.set('lon', fLon.value);
     var isFile = location.protocol === 'file:';
-var base = isFile ? 'https://cdn.jsdelivr.net/gh/Quan1204-XZ/bazi-tool@580de84d6cd4455227bcad853c2981b520575075/index.html' : location.href.split('?')[0];
+var base = 'https://cdn.jsdelivr.net/gh/Quan1204-XZ/bazi-tool@c3bfd6c6bd3d223bc8cf95b18c851e292b60d199/index.html';
     showShareDialog(base + '?' + params.toString(), isFile);
   }
 
   function showShareDialog(url, fromLocal) {
     el('shareUrl').value = url;
-    el('shareHint').style.display = fromLocal ? '' : 'none';
+    el('shareHint').style.display = '';
     var qr = el('qrcode');
     qr.innerHTML = '';
     if (window.QRCode) {
