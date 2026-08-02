@@ -2315,7 +2315,7 @@ if (shiShangN >= 2) {
     <div class="share-content">
       <h3>📱 分享排盘报告</h3>
       <div id="qrcode"></div>
-      <div id="shareHint" style="display:none;font-size:12px;color:#d4af37;margin-bottom:8px;">本地版已自动转为公网链接，扫码/点开即可查看</div>
+    <div id="shareHint" style="display:none;font-size:12px;color:#d4af37;margin-bottom:8px;">已使用 jsDelivr 国内加速链接（无需代理），扫码/点开即可查看</div>
       <input type="text" id="shareUrl" readonly>
     <div class="share-btns">
       <button type="button" class="btn btn2 btn-sm" id="copyLink">复制链接</button>
@@ -3143,7 +3143,7 @@ if (shiShangN >= 2) {
     var cityIdx = +fCity.value || 0;
     if (cityIdx === CUSTOM_IDX) params.set('lon', fLon.value);
     var isFile = location.protocol === 'file:';
-    var base = isFile ? 'https://quan1204-xz.github.io/bazi-tool/' : location.href.split('?')[0];
+    var base = isFile ? 'https://cdn.jsdelivr.net/gh/Quan1204-XZ/bazi-tool@main/index.html' : location.href.split('?')[0];
     showShareDialog(base + '?' + params.toString(), isFile);
   }
 
@@ -3187,17 +3187,17 @@ if (shiShangN >= 2) {
 
   /* ---------- PDF 导出 ---------- */
   var PDF_CSS = '#pdfReport{position:absolute;left:-9999px;top:0;width:794px;background:#fff;color:#1f2430;font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;}'
-    + '#pdfReport .pdf-page{width:794px;box-sizing:border-box;padding:46px 52px 40px;background:#fff;}'
-    + '#pdfReport h1{font-size:26px;text-align:center;margin:0 0 4px;letter-spacing:8px;color:#111;}'
-    + '#pdfReport .sub{text-align:center;font-size:12px;color:#777;margin-bottom:20px;}'
-    + '#pdfReport h2{font-size:16px;border-bottom:2px solid #c9a86a;padding-bottom:6px;margin:20px 0 10px;color:#222;}'
-    + '#pdfReport table{width:100%;border-collapse:collapse;font-size:13px;}'
-    + '#pdfReport td{border:1px solid #d9d9e2;padding:7px 9px;vertical-align:top;line-height:1.6;}'
-    + '#pdfReport td.k2{background:#f6f2e9;width:100px;font-weight:700;color:#333;}'
-    + '#pdfReport p{font-size:13px;line-height:1.75;margin:7px 0;color:#333;}'
-    + '#pdfReport p.sum{font-weight:700;margin-top:10px;}'
-    + '#pdfReport p.det{color:#444;font-size:12.5px;}'
-    + '#pdfReport .foot{text-align:center;font-size:11px;color:#999;margin-top:18px;}';
+    + '#pdfReport .pdf-page{width:794px;box-sizing:border-box;padding:54px 58px 48px;background:#fff;}'
+    + '#pdfReport h1{font-size:28px;text-align:center;margin:4px 0 8px;letter-spacing:10px;color:#111;}'
+    + '#pdfReport .sub{text-align:center;font-size:13px;color:#777;margin-bottom:30px;}'
+    + '#pdfReport h2{font-size:17px;border-bottom:2px solid #c9a86a;padding-bottom:8px;margin:6px 0 18px;color:#222;}'
+    + '#pdfReport table{width:100%;border-collapse:collapse;font-size:13.5px;}'
+    + '#pdfReport td{border:1px solid #d9d9e2;padding:10px 13px;vertical-align:top;line-height:1.8;}'
+    + '#pdfReport td.k2{background:#f6f2e9;width:106px;font-weight:700;color:#333;}'
+    + '#pdfReport p{font-size:13.5px;line-height:1.95;margin:10px 0;color:#333;}'
+    + '#pdfReport p.sum{font-weight:700;margin-top:16px;font-size:14px;}'
+    + '#pdfReport p.det{color:#444;font-size:13px;line-height:1.9;margin-bottom:18px;}'
+    + '#pdfReport .foot{text-align:center;font-size:11px;color:#999;margin-top:26px;}';
 
   function buildPdfReport() {
     var old = document.getElementById('pdfReport');
@@ -3214,14 +3214,14 @@ if (shiShangN >= 2) {
     var genderTxt = fGender.value === 'male' ? '男' : '女';
     var secs = [];
 
-    secs.push('<h1>八字排盘报告</h1><div class="sub">' + dateTxt + ' · ' + genderTxt + '命 · 由八字排盘工具生成</div>');
+    secs.push({ html: '<h1>八字排盘报告</h1><div class="sub">' + dateTxt + ' · ' + genderTxt + '命 · 由八字排盘工具生成</div>', nb: false });
 
     var infoRows = '';
     var ks = document.querySelectorAll('#infoGrid .k'), vs = document.querySelectorAll('#infoGrid .v');
     for (var i = 0; i < ks.length && i < vs.length; i++) {
       infoRows += '<tr><td class="k2">' + ks[i].textContent + '</td><td>' + vs[i].textContent + '</td></tr>';
     }
-    if (infoRows) secs.push('<h2>一、基本信息</h2><table>' + infoRows + '</table>');
+    if (infoRows) secs.push({ html: '<h2>一、基本信息</h2><table>' + infoRows + '</table>', nb: false });
 
     var pilRows = '';
     document.querySelectorAll('#pillars .pillar').forEach(function (p) {
@@ -3233,42 +3233,46 @@ if (shiShangN >= 2) {
       pilRows += '<tr><td class="k2">' + name + '</td><td><b>' + gz.replace(/\n+/g, ' ').trim() + '</b><br>' +
         cang + '<br>' + meta.replace(/\n+/g, ' · ') + '<br>' + ss + '</td></tr>';
     });
-    if (pilRows) secs.push('<h2>二、四柱排盘</h2><table>' + pilRows + '</table>');
+    if (pilRows) secs.push({ html: '<h2>二、四柱排盘</h2><table>' + pilRows + '</table>', nb: true });
 
     var core = document.getElementById('coreStrip');
     if (core && core.innerText.trim()) {
-      secs.push('<h2>三、命局核心</h2><p class="sum">' + core.innerText.replace(/\n+/g, ' · ') + '</p>');
+      secs.push({ html: '<h2>三、命局核心</h2><p class="sum">' + core.innerText.replace(/\n+/g, ' · ') + '</p>', nb: true });
     }
 
     var repItems = document.querySelectorAll('#reportList .report-item');
     if (repItems.length) {
-      var repHtml = '';
-      repItems.forEach(function (it) {
+      secs.push({ html: '<h2>四、分析报告</h2>', nb: true });
+      repItems.forEach(function (it, idx) {
         var t = (it.querySelector('.report-title') || {}).textContent || '';
         var s = (it.querySelector('.report-summary') || {}).textContent || '';
         var clone = it.cloneNode(true);
         var detEl = clone.querySelector('.report-detail');
         if (detEl) detEl.classList.remove('hidden');
         var d = detEl ? detEl.innerText : '';
-        d = d.replace(/\s+/g, ' ').trim().slice(0, 500);
-        repHtml += '<p class="sum">' + t + '：' + s + '</p>' + (d ? '<p class="det">' + d + '</p>' : '');
+        d = d.replace(/\s+/g, ' ').trim().slice(0, 600);
+        secs.push({ html: '<p class="sum">' + (idx + 1) + '. ' + t + '：' + s + '</p>' + (d ? '<p class="det">' + d + '</p>' : ''), nb: false });
       });
-      secs.push('<h2>四、分析报告</h2>' + repHtml);
     }
 
     var stars = document.getElementById('starsGrid');
     if (stars && stars.innerText.trim()) {
-      secs.push('<h2>五、格局星评</h2><p class="sum">' + stars.innerText.replace(/\n+/g, ' · ') + '</p>');
+      secs.push({ html: '<h2>五、格局星评</h2><p class="sum">' + stars.innerText.replace(/\n+/g, ' · ') + '</p>', nb: true });
     }
-    secs.push('<div class="foot">本报告由八字排盘工具按规则自动推演（用神、格局、十神关系等），仅供参考，不构成命理结论。</div>');
+    secs.push({ html: '<div class="foot">本报告由八字排盘工具按规则自动推演（用神、格局、十神关系等），仅供参考，不构成命理结论。</div>', nb: false });
 
     var page = document.createElement('div');
     page.className = 'pdf-page';
     for (var s = 0; s < secs.length; s++) {
       var item = document.createElement('div');
-      item.innerHTML = secs[s];
+      item.innerHTML = secs[s].html;
+      if (secs[s].nb && page.children.length) {
+        wrap.appendChild(page);
+        page = document.createElement('div');
+        page.className = 'pdf-page';
+      }
       page.appendChild(item);
-      if (page.offsetHeight > 1010 && page.children.length > 1) {
+      while (page.offsetHeight > 1010 && page.children.length > 1) {
         var last = page.lastChild;
         page.removeChild(last);
         wrap.appendChild(page);
@@ -3295,6 +3299,7 @@ if (shiShangN >= 2) {
     var name = (el('saveName').value || '').trim();
     var today = new Date();
     var ymd = today.getFullYear() + ('0' + (today.getMonth() + 1)).slice(-2) + ('0' + today.getDate()).slice(-2);
+    var dateTxt = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
     var fileName = '八字报告' + (name ? '_' + name : '') + '_' + ymd + '.pdf';
     var wrap = buildPdfReport();
     var pages = wrap.querySelectorAll('.pdf-page');
@@ -3313,6 +3318,9 @@ if (shiShangN >= 2) {
         .then(function (canvas) {
           if (pi > 0) pdf.addPage();
           pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+          pdf.setFontSize(8);
+          pdf.setTextColor(150, 150, 160);
+          pdf.text('第 ' + (pi + 1) + '/' + pages.length + ' 页 · 生成日期 ' + dateTxt + ' · 由八字排盘工具生成', 105, 292, { align: 'center' });
           pi++;
           renderPage();
         })
@@ -3334,8 +3342,8 @@ if (shiShangN >= 2) {
 })();
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </body>
 </html>
