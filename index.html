@@ -3143,7 +3143,7 @@ if (shiShangN >= 2) {
     var cityIdx = +fCity.value || 0;
     if (cityIdx === CUSTOM_IDX) params.set('lon', fLon.value);
     var isFile = location.protocol === 'file:';
-    var base = isFile ? 'https://cdn.jsdelivr.net/gh/Quan1204-XZ/bazi-tool@main/index.html' : location.href.split('?')[0];
+    var base = isFile ? 'https://cdn.jsdelivr.net/gh/Quan1204-XZ/bazi-tool@PIN_SHA/index.html' : location.href.split('?')[0];
     showShareDialog(base + '?' + params.toString(), isFile);
   }
 
