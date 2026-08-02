@@ -2312,10 +2312,11 @@ if (shiShangN >= 2) {
 </script>
 
 <div class="share-dialog hidden" id="shareDialog">
-  <div class="share-content">
-    <h3>📱 分享排盘报告</h3>
-    <div id="qrcode"></div>
-    <input type="text" id="shareUrl" readonly>
+    <div class="share-content">
+      <h3>📱 分享排盘报告</h3>
+      <div id="qrcode"></div>
+      <div id="shareHint" style="display:none;font-size:12px;color:#d4af37;margin-bottom:8px;">本地版已自动转为公网链接，扫码/点开即可查看</div>
+      <input type="text" id="shareUrl" readonly>
     <div class="share-btns">
       <button type="button" class="btn btn2 btn-sm" id="copyLink">复制链接</button>
       <button type="button" class="btn btn2 btn-sm" id="downloadQR">下载二维码</button>
@@ -3141,12 +3142,14 @@ if (shiShangN >= 2) {
     });
     var cityIdx = +fCity.value || 0;
     if (cityIdx === CUSTOM_IDX) params.set('lon', fLon.value);
-    var base = location.href.split('?')[0];
-    showShareDialog(base + '?' + params.toString());
+    var isFile = location.protocol === 'file:';
+    var base = isFile ? 'https://quan1204-xz.github.io/bazi-tool/' : location.href.split('?')[0];
+    showShareDialog(base + '?' + params.toString(), isFile);
   }
 
-  function showShareDialog(url) {
+  function showShareDialog(url, fromLocal) {
     el('shareUrl').value = url;
+    el('shareHint').style.display = fromLocal ? '' : 'none';
     var qr = el('qrcode');
     qr.innerHTML = '';
     if (window.QRCode) {
@@ -3183,6 +3186,102 @@ if (shiShangN >= 2) {
   });
 
   /* ---------- PDF 导出 ---------- */
+  var PDF_CSS = '#pdfReport{position:absolute;left:-9999px;top:0;width:794px;background:#fff;color:#1f2430;font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;}'
+    + '#pdfReport .pdf-page{width:794px;box-sizing:border-box;padding:46px 52px 40px;background:#fff;}'
+    + '#pdfReport h1{font-size:26px;text-align:center;margin:0 0 4px;letter-spacing:8px;color:#111;}'
+    + '#pdfReport .sub{text-align:center;font-size:12px;color:#777;margin-bottom:20px;}'
+    + '#pdfReport h2{font-size:16px;border-bottom:2px solid #c9a86a;padding-bottom:6px;margin:20px 0 10px;color:#222;}'
+    + '#pdfReport table{width:100%;border-collapse:collapse;font-size:13px;}'
+    + '#pdfReport td{border:1px solid #d9d9e2;padding:7px 9px;vertical-align:top;line-height:1.6;}'
+    + '#pdfReport td.k2{background:#f6f2e9;width:100px;font-weight:700;color:#333;}'
+    + '#pdfReport p{font-size:13px;line-height:1.75;margin:7px 0;color:#333;}'
+    + '#pdfReport p.sum{font-weight:700;margin-top:10px;}'
+    + '#pdfReport p.det{color:#444;font-size:12.5px;}'
+    + '#pdfReport .foot{text-align:center;font-size:11px;color:#999;margin-top:18px;}';
+
+  function buildPdfReport() {
+    var old = document.getElementById('pdfReport');
+    if (old) old.parentNode.removeChild(old);
+    var wrap = document.createElement('div');
+    wrap.id = 'pdfReport';
+    var styleEl = document.createElement('style');
+    styleEl.textContent = PDF_CSS;
+    wrap.appendChild(styleEl);
+    document.body.appendChild(wrap);
+
+    var today = new Date();
+    var dateTxt = today.getFullYear() + ' 年 ' + (today.getMonth() + 1) + ' 月 ' + today.getDate() + ' 日';
+    var genderTxt = fGender.value === 'male' ? '男' : '女';
+    var secs = [];
+
+    secs.push('<h1>八字排盘报告</h1><div class="sub">' + dateTxt + ' · ' + genderTxt + '命 · 由八字排盘工具生成</div>');
+
+    var infoRows = '';
+    var ks = document.querySelectorAll('#infoGrid .k'), vs = document.querySelectorAll('#infoGrid .v');
+    for (var i = 0; i < ks.length && i < vs.length; i++) {
+      infoRows += '<tr><td class="k2">' + ks[i].textContent + '</td><td>' + vs[i].textContent + '</td></tr>';
+    }
+    if (infoRows) secs.push('<h2>一、基本信息</h2><table>' + infoRows + '</table>');
+
+    var pilRows = '';
+    document.querySelectorAll('#pillars .pillar').forEach(function (p) {
+      var name = (p.querySelector('.p-name') || {}).textContent || '';
+      var gz = (p.querySelector('.p-gz') || {}).innerText || '';
+      var cang = (p.querySelector('.cang') || {}).textContent || '';
+      var meta = (p.querySelector('.meta') || {}).innerText || '';
+      var ss = (p.querySelector('.p-shensha') || {}).textContent || '';
+      pilRows += '<tr><td class="k2">' + name + '</td><td><b>' + gz.replace(/\n+/g, ' ').trim() + '</b><br>' +
+        cang + '<br>' + meta.replace(/\n+/g, ' · ') + '<br>' + ss + '</td></tr>';
+    });
+    if (pilRows) secs.push('<h2>二、四柱排盘</h2><table>' + pilRows + '</table>');
+
+    var core = document.getElementById('coreStrip');
+    if (core && core.innerText.trim()) {
+      secs.push('<h2>三、命局核心</h2><p class="sum">' + core.innerText.replace(/\n+/g, ' · ') + '</p>');
+    }
+
+    var repItems = document.querySelectorAll('#reportList .report-item');
+    if (repItems.length) {
+      var repHtml = '';
+      repItems.forEach(function (it) {
+        var t = (it.querySelector('.report-title') || {}).textContent || '';
+        var s = (it.querySelector('.report-summary') || {}).textContent || '';
+        var clone = it.cloneNode(true);
+        var detEl = clone.querySelector('.report-detail');
+        if (detEl) detEl.classList.remove('hidden');
+        var d = detEl ? detEl.innerText : '';
+        d = d.replace(/\s+/g, ' ').trim().slice(0, 500);
+        repHtml += '<p class="sum">' + t + '：' + s + '</p>' + (d ? '<p class="det">' + d + '</p>' : '');
+      });
+      secs.push('<h2>四、分析报告</h2>' + repHtml);
+    }
+
+    var stars = document.getElementById('starsGrid');
+    if (stars && stars.innerText.trim()) {
+      secs.push('<h2>五、格局星评</h2><p class="sum">' + stars.innerText.replace(/\n+/g, ' · ') + '</p>');
+    }
+    secs.push('<div class="foot">本报告由八字排盘工具按规则自动推演（用神、格局、十神关系等），仅供参考，不构成命理结论。</div>');
+
+    var page = document.createElement('div');
+    page.className = 'pdf-page';
+    for (var s = 0; s < secs.length; s++) {
+      var item = document.createElement('div');
+      item.innerHTML = secs[s];
+      page.appendChild(item);
+      if (page.offsetHeight > 1010 && page.children.length > 1) {
+        var last = page.lastChild;
+        page.removeChild(last);
+        wrap.appendChild(page);
+        page = document.createElement('div');
+        page.className = 'pdf-page';
+        page.appendChild(last);
+      }
+    }
+    if (page.children.length) wrap.appendChild(page);
+    return wrap;
+  }
+  window.__buildPdfReport = buildPdfReport;
+
   function exportPdf() {
     if (!window.html2canvas || !(window.jspdf && window.jspdf.jsPDF)) {
       alert('PDF 组件未加载（需联网加载 CDN 库），请联网后重试');
@@ -3192,50 +3291,46 @@ if (shiShangN >= 2) {
     if (result.classList.contains('hidden')) { alert('请先开盘生成排盘结果'); return; }
     var box = el('pdfProgress'), bar = el('pdfBar'), pct = el('pdfPct');
     box.classList.remove('hidden');
-    pct.textContent = '10%'; bar.style.width = '10%';
+    pct.textContent = '5%'; bar.style.width = '5%';
     var name = (el('saveName').value || '').trim();
     var today = new Date();
     var ymd = today.getFullYear() + ('0' + (today.getMonth() + 1)).slice(-2) + ('0' + today.getDate()).slice(-2);
     var fileName = '八字报告' + (name ? '_' + name : '') + '_' + ymd + '.pdf';
-    html2canvas(result, { scale: 2, backgroundColor: '#12122b', useCORS: true, logging: false })
-      .then(function (canvas) {
-        pct.textContent = '50%'; bar.style.width = '50%';
-        var pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
-        var pw = 210, ph = 297, margin = 8;
-        var imgW = pw - margin * 2;
-        var imgH = canvas.height * imgW / canvas.width;
-        var pageH = ph - margin * 2;
-        var pages = Math.max(1, Math.ceil(imgH / pageH));
-        for (var i = 0; i < pages; i++) {
-          if (i > 0) pdf.addPage();
-          var sy = Math.round(i * pageH / imgH * canvas.height);
-          var sh = Math.min(pageH / imgH * canvas.height, canvas.height - sy);
-          var tmp = document.createElement('canvas');
-          tmp.width = canvas.width;
-          tmp.height = Math.ceil(sh);
-          var ctx = tmp.getContext('2d');
-          ctx.fillStyle = '#12122b';
-          ctx.fillRect(0, 0, tmp.width, tmp.height);
-          ctx.drawImage(canvas, 0, sy, canvas.width, sh, 0, 0, canvas.width, sh);
-          pdf.addImage(tmp.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, sh / canvas.height * imgH, undefined, 'FAST');
-          pdf.setFontSize(8);
-          pdf.setTextColor(140, 140, 160);
-          pdf.text('生成日期 ' + today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2) +
-            ' · 由八字排盘工具生成 · 第 ' + (i + 1) + '/' + pages + ' 页', pw / 2, ph - 3, { align: 'center' });
-        }
-        pct.textContent = '95%'; bar.style.width = '95%';
+    var wrap = buildPdfReport();
+    var pages = wrap.querySelectorAll('.pdf-page');
+    var pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+    var pi = 0;
+    function renderPage() {
+      if (pi >= pages.length) {
         pdf.save(fileName);
+        pct.textContent = '100%'; bar.style.width = '100%';
         setTimeout(function () { box.classList.add('hidden'); }, 500);
-      })
-      .catch(function (e) {
-        box.classList.add('hidden');
-        alert('PDF 生成失败：' + (e && e.message ? e.message : e));
-      });
+        return;
+      }
+      pct.textContent = Math.round(10 + pi / pages.length * 80) + '%';
+      bar.style.width = pct.textContent;
+      html2canvas(pages[pi], { scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false })
+        .then(function (canvas) {
+          if (pi > 0) pdf.addPage();
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+          pi++;
+          renderPage();
+        })
+        .catch(function (e) {
+          box.classList.add('hidden');
+          alert('PDF 生成失败：' + (e && e.message ? e.message : e));
+        });
+    }
+    renderPage();
   }
   el('btnPdf').addEventListener('click', exportPdf);
 
   renderArchive();
-  if (!loadFromURL()) render();
+  try {
+    if (!loadFromURL()) render();
+  } catch (e) {
+    render();
+  }
 })();
 </script>
 
