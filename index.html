@@ -3186,19 +3186,46 @@ var base = 'https://quan1204-xz.github.io/bazi-tool/';
   });
 
   /* ---------- PDF 导出 ---------- */
-  var PDF_CSS = '#pdfReport{position:absolute;left:-9999px;top:0;width:794px;background:#fff;color:#1f2430;font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;}'
-    + '#pdfReport .pdf-page{width:794px;box-sizing:border-box;position:relative;padding:54px 58px 64px;background:#fff;}'
-    + '#pdfReport h1{font-size:28px;text-align:center;margin:4px 0 8px;letter-spacing:10px;color:#111;}'
-    + '#pdfReport .sub{text-align:center;font-size:13px;color:#777;margin-bottom:30px;}'
-    + '#pdfReport h2{font-size:17px;border-bottom:2px solid #c9a86a;padding-bottom:8px;margin:6px 0 18px;color:#222;}'
-    + '#pdfReport table{width:100%;border-collapse:collapse;font-size:13.5px;}'
-    + '#pdfReport td{border:1px solid #d9d9e2;padding:10px 13px;vertical-align:top;line-height:1.8;}'
-    + '#pdfReport td.k2{background:#f6f2e9;width:106px;font-weight:700;color:#333;}'
-    + '#pdfReport p{font-size:13.5px;line-height:1.95;margin:10px 0;color:#333;}'
-    + '#pdfReport p.sum{font-weight:700;margin-top:16px;font-size:14px;}'
-    + '#pdfReport p.det{color:#444;font-size:13px;line-height:1.9;margin-bottom:18px;}'
-    + '#pdfReport .foot{text-align:center;font-size:11px;color:#999;margin-top:26px;}'
-    + '#pdfReport .pfoot{position:absolute;left:58px;right:58px;bottom:26px;text-align:center;font-size:11px;color:#999;padding-top:6px;border-top:1px solid #eee;}';
+  var PDF_CSS = '#pdfReport{position:absolute;left:-9999px;top:0;width:794px;background:#fff;color:#2b2b33;font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;}'
+    + '#pdfReport .pdf-page{width:794px;box-sizing:border-box;position:relative;padding:46px 56px 70px;background:#fff;}'
+    + '#pdfReport .pdf-head{border-bottom:3px double #b9963f;padding-bottom:16px;margin-bottom:20px;text-align:center;}'
+    + '#pdfReport .pdf-head .brand{font-size:11px;letter-spacing:6px;color:#a67c1e;margin-bottom:4px;}'
+    + '#pdfReport .pdf-head h1{font-size:30px;margin:2px 0 8px;letter-spacing:14px;text-indent:14px;color:#1f1f26;}'
+    + '#pdfReport .pdf-head .sub{font-size:12.5px;color:#555;}'
+    + '#pdfReport .pdf-head .sub b{color:#b23a2e;font-size:14px;letter-spacing:2px;}'
+    + '#pdfReport .pdf-head .slogan{font-size:10.5px;color:#999;letter-spacing:2px;margin-top:6px;}'
+    + '#pdfReport h2{font-size:15.5px;color:#1f1f26;border-left:4px solid #a67c1e;border-bottom:2px solid #e6cf9a;padding:0 0 7px 10px;margin:22px 0 14px;letter-spacing:3px;}'
+    + '#pdfReport table{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0 14px;}'
+    + '#pdfReport th{background:#f4ead0;color:#5a4714;border:1px solid #dcd3ba;padding:7px 9px;font-size:12px;}'
+    + '#pdfReport td{border:1px solid #ddd6c2;padding:8px 10px;vertical-align:top;line-height:1.8;color:#333;}'
+    + '#pdfReport tr:nth-child(even) td{background:#faf8f1;}'
+    + '#pdfReport td.k2{background:#fbf7ec;width:108px;font-weight:700;color:#4a3a12;}'
+    + '#pdfReport p{font-size:13px;line-height:1.95;margin:8px 0;color:#333;}'
+    + '#pdfReport p.du-sum{font-size:12px;color:#666;background:#faf6ec;border:1px solid #ece2c6;padding:8px 12px;margin:4px 0 10px;}'
+    + '#pdfReport .gz{font-family:"KaiTi","STKaiti","SimSun",serif;font-size:17px;font-weight:700;}'
+    + '#pdfReport .gz-meta{font-size:10.5px;color:#888;margin-right:10px;}'
+    + '#pdfReport .g-sub{font-size:11px;color:#777;line-height:1.8;}'
+    + '#pdfReport .cgan{font-weight:700;margin-right:3px;}'
+    + '#pdfReport .w-wood{color:#2e7d32;}'
+    + '#pdfReport .w-fire{color:#c62828;}'
+    + '#pdfReport .w-earth{color:#a1662a;}'
+    + '#pdfReport .w-metal{color:#5d6470;}'
+    + '#pdfReport .w-water{color:#1565c0;}'
+    + '#pdfReport .core-grid td{width:33.33%;text-align:center;border:1px solid #ddd6c2;padding:10px 8px;}'
+    + '#pdfReport .ci-label{font-size:11px;color:#8a7a4a;letter-spacing:2px;}'
+    + '#pdfReport .ci-val{font-size:14px;font-weight:700;color:#333;margin:5px 0 3px;}'
+    + '#pdfReport .ci-sub{font-size:10.5px;color:#888;line-height:1.6;}'
+    + '#pdfReport .dim{border-left:3px solid #e6cf9a;padding-left:12px;margin:12px 0 18px;}'
+    + '#pdfReport .dim-head{display:flex;align-items:center;margin:6px 0 4px;}'
+    + '#pdfReport .dim-no{background:#a67c1e;color:#fff;border-radius:3px;padding:2px 8px;font-size:12px;margin-right:8px;}'
+    + '#pdfReport .dim-title{font-size:15px;font-weight:700;color:#333;letter-spacing:2px;}'
+    + '#pdfReport .dim-sum{font-weight:700;color:#444;margin:4px 0;font-size:13px;}'
+    + '#pdfReport .dim-det{color:#4a4a52;font-size:12.5px;line-height:1.9;margin:6px 0 14px 26px;}'
+    + '#pdfReport .dim-det b{color:#a67c1e;font-weight:700;}'
+    + '#pdfReport .dim-det .tip{color:#999;font-size:11.5px;}'
+    + '#pdfReport .stars{color:#e0a800;font-size:14px;letter-spacing:2px;white-space:nowrap;}'
+    + '#pdfReport .foot{text-align:center;font-size:10.5px;color:#999;margin-top:24px;}'
+    + '#pdfReport .pfoot{position:absolute;left:56px;right:56px;bottom:24px;text-align:center;font-size:10.5px;color:#999;padding-top:6px;border-top:1px solid #eee;}';
 
   function buildPdfReport() {
     var old = document.getElementById('pdfReport');
@@ -3213,52 +3240,140 @@ var base = 'https://quan1204-xz.github.io/bazi-tool/';
     var today = new Date();
     var dateTxt = today.getFullYear() + ' 年 ' + (today.getMonth() + 1) + ' 月 ' + today.getDate() + ' 日';
     var genderTxt = fGender.value === 'male' ? '男' : '女';
+    var nameTxt = (el('saveName').value || '').trim();
     var secs = [];
 
-    secs.push({ html: '<h1>八字排盘报告</h1><div class="sub">' + dateTxt + ' · ' + genderTxt + '命 · 由八字排盘工具生成</div>', nb: false });
+    function wxClass(color) {
+      var c = String(color || '').toLowerCase();
+      if (c.indexOf('4ade80') >= 0 || c.indexOf('22c55e') >= 0) return 'w-wood';
+      if (c.indexOf('f87171') >= 0 || c.indexOf('ef4444') >= 0) return 'w-fire';
+      if (c.indexOf('fbbf24') >= 0 || c.indexOf('f59e0b') >= 0) return 'w-earth';
+      if (c.indexOf('d9dce6') >= 0 || c.indexOf('e5e7eb') >= 0) return 'w-metal';
+      if (c.indexOf('60a5fa') >= 0 || c.indexOf('3b82f6') >= 0) return 'w-water';
+      return '';
+    }
 
+    // 封面头
+    secs.push({ html:
+      '<div class="pdf-head"><div class="brand">八字排盘 · 鎏金版</div>' +
+      '<h1>八字排盘报告</h1>' +
+      '<div class="sub">' + (nameTxt ? '<b>' + escapeHtml(nameTxt) + '</b> · ' : '') + genderTxt + '命 · ' + dateTxt + '</div>' +
+      '<div class="slogan">四柱 · 十神 · 纳音 · 长生 · 五行 · 格局星评</div></div>', nb: false });
+
+    // 一、命主基本信息
     var infoRows = '';
     var ks = document.querySelectorAll('#infoGrid .k'), vs = document.querySelectorAll('#infoGrid .v');
     for (var i = 0; i < ks.length && i < vs.length; i++) {
       infoRows += '<tr><td class="k2">' + ks[i].textContent + '</td><td>' + vs[i].textContent + '</td></tr>';
     }
-    if (infoRows) secs.push({ html: '<h2>一、基本信息</h2><table>' + infoRows + '</table>', nb: false });
+    if (infoRows) secs.push({ html: '<h2>一、命主基本信息</h2><table>' + infoRows + '</table>', nb: false });
 
+    // 二、四柱排盘
     var pilRows = '';
     document.querySelectorAll('#pillars .pillar').forEach(function (p) {
       var name = (p.querySelector('.p-name') || {}).textContent || '';
-      var gz = (p.querySelector('.p-gz') || {}).innerText || '';
-      var cang = (p.querySelector('.cang') || {}).textContent || '';
-      var meta = (p.querySelector('.meta') || {}).innerText || '';
-      var ss = (p.querySelector('.p-shensha') || {}).textContent || '';
-      pilRows += '<tr><td class="k2">' + name + '</td><td><b>' + gz.replace(/\n+/g, ' ').trim() + '</b><br>' +
-        cang + '<br>' + meta.replace(/\n+/g, ' · ') + '<br>' + ss + '</td></tr>';
+      var htxt = '';
+      p.querySelectorAll('.p-gz .half').forEach(function (h) {
+        var ten = ((h.querySelector('.ten') || {}).textContent || '').trim();
+        var ch = h.querySelector('.char');
+        var wxTxt = (h.querySelector('.wx') || {}).textContent || '';
+        var cls = ch ? wxClass(ch.style.color) : '';
+        htxt += '<span class="gz ' + cls + '">' + (ch ? ch.textContent : '') + '</span>' +
+          '<span class="gz-meta">' + (ten ? ten + '·' : '') + wxTxt + '</span> ';
+      });
+      var cang = '';
+      p.querySelectorAll('.cang .c-gan').forEach(function (g) {
+        var sp = g.querySelector('span') || g.firstElementChild;
+        var ten = ((g.querySelector('i') || {}).textContent || '');
+        cang += '<span class="cgan ' + wxClass(sp ? sp.style.color : '') + '">' + (sp ? sp.textContent : '') + '</span>' + ten + ' ';
+      });
+      var meta = ((p.querySelector('.meta') || {}).innerText || '').replace(/\s+/g, ' ').trim();
+      var ss = ((p.querySelector('.p-shensha') || {}).textContent || '').trim();
+      pilRows += '<tr><td class="k2">' + name + '</td><td><div>' + htxt + '</div>' +
+        (cang ? '<div class="g-sub">藏干：' + cang + '</div>' : '') +
+        '<div class="g-sub">' + meta + (ss ? ' · ' + ss : '') + '</div></td></tr>';
     });
-    if (pilRows) secs.push({ html: '<h2>二、四柱排盘</h2><table>' + pilRows + '</table>', nb: true });
+    if (pilRows) secs.push({ html: '<h2>二、四柱排盘</h2><table>' + pilRows + '</table>', nb: false });
 
-    var core = document.getElementById('coreStrip');
-    if (core && core.innerText.trim()) {
-      secs.push({ html: '<h2>三、命局核心</h2><p class="sum">' + core.innerText.replace(/\n+/g, ' · ') + '</p>', nb: true });
+    // 三、命局核心
+    var coreItems = [];
+    document.querySelectorAll('#coreStrip .core-item').forEach(function (it) {
+      coreItems.push({
+        label: ((it.querySelector('span') || {}).textContent || '').trim(),
+        val: ((it.querySelector('b') || {}).textContent || '').trim(),
+        sub: ((it.querySelector('.sub') || {}).textContent || '').trim()
+      });
+    });
+    if (coreItems.length) {
+      var coreHtml = '<table class="core-grid">';
+      for (var ci = 0; ci < coreItems.length; ci += 3) {
+        coreHtml += '<tr>';
+        for (var cj = ci; cj < ci + 3; cj++) {
+          if (cj < coreItems.length) {
+            var ck = coreItems[cj];
+            coreHtml += '<td><div class="ci-label">' + ck.label + '</div><div class="ci-val">' + ck.val + '</div>' +
+              (ck.sub ? '<div class="ci-sub">' + ck.sub + '</div>' : '') + '</td>';
+          } else {
+            coreHtml += '<td></td>';
+          }
+        }
+        coreHtml += '</tr>';
+      }
+      coreHtml += '</table>';
+      secs.push({ html: '<h2>三、命局核心</h2>' + coreHtml, nb: false });
     }
 
+    // 四、大运走势
+    var duSum = ((document.getElementById('dayunSummary') || {}).innerText || '').replace(/\s+/g, ' ').trim();
+    var dyRows = '';
+    document.querySelectorAll('#dayunGrid .dayun-cell').forEach(function (cell) {
+      var step = ((cell.querySelector('.du-step') || {}).textContent || '').replace(/\s+/g, ' ').replace('当前', '').trim();
+      var gz = cell.querySelector('.du-gz');
+      var ten = ((cell.querySelector('.du-ten') || {}).textContent || '').trim();
+      var meta2 = ((cell.querySelector('.du-meta') || {}).textContent || '').trim();
+      var yr = ((cell.querySelector('.du-year') || {}).textContent || '').trim();
+      var cls = gz ? wxClass(gz.style.color) : '';
+      dyRows += '<tr><td class="k2">' + step + (cell.classList.contains('current') ? '（当前）' : '') + '</td>' +
+        '<td><span class="gz ' + cls + '">' + (gz ? gz.textContent : '') + '</span></td>' +
+        '<td>' + ten + '</td><td>' + meta2 + '</td><td>' + yr + '</td></tr>';
+    });
+    if (dyRows) {
+      secs.push({ html: '<h2>四、大运走势</h2>' +
+        (duSum ? '<p class="du-sum">' + duSum + '</p>' : '') +
+        '<table><tr><th>步骤</th><th>干支</th><th>十神</th><th>起运</th><th>年份</th></tr>' + dyRows + '</table>', nb: false });
+    }
+
+    // 五、分析报告
     var repItems = document.querySelectorAll('#reportList .report-item');
     if (repItems.length) {
-      secs.push({ html: '<h2>四、分析报告</h2>', nb: true });
+      secs.push({ html: '<h2>五、分析报告</h2>', nb: false });
       repItems.forEach(function (it, idx) {
-        var t = (it.querySelector('.report-title') || {}).textContent || '';
-        var s = (it.querySelector('.report-summary') || {}).textContent || '';
-        var clone = it.cloneNode(true);
-        var detEl = clone.querySelector('.report-detail');
-        if (detEl) detEl.classList.remove('hidden');
-        var d = detEl ? detEl.innerText : '';
-        d = d.replace(/\s+/g, ' ').trim().slice(0, 600);
-        secs.push({ html: '<p class="sum">' + (idx + 1) + '. ' + t + '：' + s + '</p>' + (d ? '<p class="det">' + d + '</p>' : ''), nb: false });
+        var t = ((it.querySelector('.report-title') || {}).textContent || '').trim();
+        var s = ((it.querySelector('.report-summary') || {}).textContent || '').trim();
+        var detEl = it.querySelector('.report-detail');
+        var d = detEl ? detEl.innerHTML : '';
+        d = d.replace(/var\(--gold\)/g, '#a67c1e').replace(/var\(--muted\)/g, '#8a8a92');
+        secs.push({ html: '<div class="dim">' +
+          '<div class="dim-head"><span class="dim-no">' + (idx + 1) + '</span><span class="dim-title">' + t + '</span></div>' +
+          (s ? '<p class="dim-sum">' + s + '</p>' : '') +
+          (d ? '<div class="dim-det">' + d + '</div>' : '') +
+          '</div>', nb: false });
       });
     }
 
-    var stars = document.getElementById('starsGrid');
-    if (stars && stars.innerText.trim()) {
-      secs.push({ html: '<h2>五、格局星评</h2><p class="sum">' + stars.innerText.replace(/\n+/g, ' · ') + '</p>', nb: true });
+    // 六、格局星评
+    var starRows = '';
+    document.querySelectorAll('#starsGrid .stars-row').forEach(function (row) {
+      var nm = ((row.querySelector('.sr-name') || {}).textContent || '').trim();
+      var num = ((row.querySelector('.sr-num') || {}).textContent || '').trim();
+      var why = ((row.querySelector('.sr-why') || {}).textContent || '').trim();
+      var sf = row.querySelector('.stars .sf');
+      var full = sf ? Math.round((parseFloat(sf.style.width) || 0) / 20) : 0;
+      var starsTxt = '★★★★★'.slice(0, full) + '☆☆☆☆☆'.slice(0, Math.max(0, 5 - full));
+      starRows += '<tr><td class="k2">' + nm + '</td><td class="stars">' + starsTxt + '</td><td>' + num + '</td><td>' + why + '</td></tr>';
+    });
+    if (starRows) {
+      secs.push({ html: '<h2>六、格局星评</h2><table><tr><th>维度</th><th>星级</th><th>评分</th><th>说明</th></tr>' + starRows + '</table>', nb: false });
     }
     secs.push({ html: '<div class="foot">本报告由八字排盘工具按规则自动推演（用神、格局、十神关系等），仅供参考，不构成命理结论。</div>', nb: false });
 
