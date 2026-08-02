@@ -3262,27 +3262,46 @@ var base = 'https://quan1204-xz.github.io/bazi-tool/';
     }
     secs.push({ html: '<div class="foot">本报告由八字排盘工具按规则自动推演（用神、格局、十神关系等），仅供参考，不构成命理结论。</div>', nb: false });
 
-    var page = document.createElement('div');
-    page.className = 'pdf-page';
+    // 自然流式分页：内容按顺序填满一页再换页，标题不孤悬页尾，整块移动不切断
+    var LIMIT = 990;
+    function newPdfPage() {
+      var p = document.createElement('div');
+      p.className = 'pdf-page';
+      wrap.appendChild(p);
+      return p;
+    }
+    var page = newPdfPage();
+    function isH2Only(el) {
+      return el && el.children.length === 1 && el.firstElementChild && el.firstElementChild.tagName === 'H2';
+    }
     for (var s = 0; s < secs.length; s++) {
       var item = document.createElement('div');
       item.innerHTML = secs[s].html;
-      if (secs[s].nb && page.children.length) {
-        wrap.appendChild(page);
-        page = document.createElement('div');
-        page.className = 'pdf-page';
-      }
-      page.appendChild(item);
-      while (page.offsetHeight > 990 && page.children.length > 1) {
-        var last = page.lastChild;
-        page.removeChild(last);
-        wrap.appendChild(page);
-        page = document.createElement('div');
-        page.className = 'pdf-page';
-        page.appendChild(last);
+      if (!item.children.length) continue;
+      if (page.children.length) {
+        page.appendChild(item);
+        if (page.offsetHeight > LIMIT) {
+          var moved = [];
+          while (page.offsetHeight > LIMIT && page.children.length > 1) {
+            moved.unshift(page.lastChild);
+            page.removeChild(page.lastChild);
+          }
+          // 页尾只剩孤立标题时，把标题也移到下一页
+          if (isH2Only(page.children[page.children.length - 1])) {
+            moved.unshift(page.lastChild);
+            page.removeChild(page.lastChild);
+          }
+          if (page.children.length) {
+            wrap.appendChild(page);
+          }
+          page = newPdfPage();
+          for (var mi = 0; mi < moved.length; mi++) page.appendChild(moved[mi]);
+        }
+      } else {
+        page.appendChild(item);
       }
     }
-    if (page.children.length) wrap.appendChild(page);
+    if (!page.children.length && page.parentNode) page.parentNode.removeChild(page);
     var pgs = wrap.querySelectorAll('.pdf-page');
     for (var pi = 0; pi < pgs.length; pi++) {
       var pf = document.createElement('div');
