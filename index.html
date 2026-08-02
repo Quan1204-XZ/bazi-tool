@@ -2315,7 +2315,7 @@ if (shiShangN >= 2) {
     <div class="share-content">
       <h3>📱 分享排盘报告</h3>
       <div id="qrcode"></div>
-    <div id="shareHint" style="display:none;font-size:12px;color:#d4af37;margin-bottom:8px;">已使用 githack 公网加速链接（无需代理），扫码/点开即可查看</div>
+    <div id="shareHint" style="display:none;font-size:12px;color:#d4af37;margin-bottom:8px;">已转为公网链接，扫码/点开即可查看</div>
       <input type="text" id="shareUrl" readonly>
     <div class="share-btns">
       <button type="button" class="btn btn2 btn-sm" id="copyLink">复制链接</button>
@@ -3143,7 +3143,7 @@ if (shiShangN >= 2) {
     var cityIdx = +fCity.value || 0;
     if (cityIdx === CUSTOM_IDX) params.set('lon', fLon.value);
     var isFile = location.protocol === 'file:';
-var base = 'https://raw.githack.com/Quan1204-XZ/bazi-tool/90140bf423b1ae34fa3ca256522ba793c4796fa3/index.html';
+var base = 'https://quan1204-xz.github.io/bazi-tool/';
     showShareDialog(base + '?' + params.toString(), isFile);
   }
 
